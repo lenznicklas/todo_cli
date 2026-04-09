@@ -4,4 +4,5 @@ use serde::{Deserialize, Serialize};
 pub struct Todo {
     pub name: String,
     pub id: i32,
+    pub next: i32,
 }
