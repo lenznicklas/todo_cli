@@ -1,8 +1,15 @@
 use crate::model::Todo;
 use std::fs;
 use std::io;
+use std::path::Path;
 
-const FILE: &str = "todo.json";
+const FILEGLOBAL: &str = "~/.local/share/todo/todo.json";
+
+pub fn ensure_dir() -> std::io::Result<()> {
+    let path = Path::new("~/.local/share/todo");
+    fs::create_dir_all(path)?;
+    Ok(())
+}
 
 pub fn add_todo(text: String) -> io::Result<()> {
     let mut todos = load_todos()?;
@@ -51,7 +58,7 @@ pub fn done_todo(num: i32) -> io::Result<()> {
 }
 
 fn load_todos() -> io::Result<Vec<Todo>> {
-    match fs::read_to_string(FILE) {
+    match fs::read_to_string(FILEGLOBAL) {
         Ok(content) => {
             let todos: Vec<Todo> = serde_json::from_str(&content).map_err(io::Error::other)?;
             Ok(todos)
@@ -63,7 +70,7 @@ fn load_todos() -> io::Result<Vec<Todo>> {
 
 fn save_todos(todos: &[Todo]) -> io::Result<()> {
     let json = serde_json::to_string_pretty(todos).map_err(io::Error::other)?;
-    fs::write(FILE, json)
+    fs::write(FILEGLOBAL, json)
 }
 
 fn normalize_todos(todos: &mut [Todo]) {

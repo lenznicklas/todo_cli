@@ -6,6 +6,7 @@ use clap::Parser;
 use cli::{Cli, Commands};
 
 fn main() {
+    let _ = todo::ensure_dir();
     let cli = Cli::parse();
 
     let result = match cli.command {
